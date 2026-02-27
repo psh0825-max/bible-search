@@ -30,10 +30,10 @@ export default function BookmarksPage() {
     <div className="relative z-10 max-w-lg mx-auto px-5 pt-6">
       <h1 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '20px' }}>⭐ 저장한 말씀</h1>
       {bookmarks.length === 0 ? (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ textAlign: 'center', padding: '60px 20px' }}>
-          <div style={{ fontSize: '48px', marginBottom: '16px' }}>📑</div>
-          <p style={{ color: 'var(--text-dim)', fontSize: '16px' }}>아직 저장한 말씀이 없어요</p>
-          <p style={{ color: 'var(--text-dim)', fontSize: '14px', marginTop: '8px' }}>말씀 옆의 ⭐을 눌러 저장해보세요</p>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'center', padding: '80px 20px' }}>
+          <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 3, repeat: Infinity }} style={{ fontSize: '56px', marginBottom: '20px' }}>📑</motion.div>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '18px', fontWeight: 600 }}>아직 저장한 말씀이 없어요</p>
+          <p style={{ color: 'var(--text-dim)', fontSize: '14px', marginTop: '10px', lineHeight: 1.6 }}>말씀을 읽거나 검색하면서<br/>⭐을 눌러 저장해보세요</p>
         </motion.div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>

@@ -33,11 +33,14 @@ export default function CategoriesPage() {
 
             {/* Daily Verse */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-              className="glass" style={{ borderRadius: '20px', padding: '24px', marginBottom: '24px', textAlign: 'center' }}>
-              <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 3, repeat: Infinity }} style={{ fontSize: '32px', marginBottom: '8px' }}>🌅</motion.div>
-              <p style={{ fontSize: '12px', color: 'var(--accent-light)', fontWeight: 600, marginBottom: '8px' }}>오늘의 말씀</p>
-              <p style={{ fontSize: '17px', lineHeight: 1.8, marginBottom: '8px' }}>"{daily.text}"</p>
-              <p style={{ fontSize: '13px', color: 'var(--text-dim)' }}>{daily.reference}</p>
+              className="gradient-border glow" style={{ background: 'var(--bg-card)', padding: '28px', marginBottom: '28px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-purple-500/10" style={{ borderRadius: 'var(--radius)' }} />
+              <div style={{ position: 'relative', zIndex: 1 }}>
+                <motion.div animate={{ y: [0, -6, 0], rotate: [0, 3, -3, 0] }} transition={{ duration: 5, repeat: Infinity }} style={{ fontSize: '40px', marginBottom: '12px' }}>🌅</motion.div>
+                <p style={{ fontSize: '11px', color: 'var(--accent-bright)', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>✦ 오늘의 말씀 ✦</p>
+                <p style={{ fontSize: '18px', lineHeight: 1.9, marginBottom: '12px', fontWeight: 500 }}>"{daily.text}"</p>
+                <p style={{ fontSize: '14px', color: 'var(--text-dim)', fontWeight: 600 }}>{daily.reference}</p>
+              </div>
               <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '12px' }}>
                 <button onClick={() => speakVerse(daily.text)} style={{ background: 'none', border: '1px solid var(--border)', borderRadius: '10px', padding: '8px 16px', color: 'var(--text-dim)', cursor: 'pointer', fontSize: '13px' }}>🔊 듣기</button>
                 <button onClick={() => { addBookmark({ reference: daily.reference, text: daily.text, mood: 'hope' }) }} style={{ background: 'none', border: '1px solid var(--border)', borderRadius: '10px', padding: '8px 16px', color: 'var(--text-dim)', cursor: 'pointer', fontSize: '13px' }}>⭐ 저장</button>
@@ -46,14 +49,19 @@ export default function CategoriesPage() {
             </motion.div>
 
             {/* Categories */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
               {CATEGORIES.map((cat, i) => (
-                <motion.button key={cat.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-                  whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                <motion.button key={cat.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
+                  whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.96 }}
                   onClick={() => selectCategory(cat.id)}
-                  style={{ padding: '20px', borderRadius: '16px', border: '1px solid var(--border)', background: 'var(--bg-card)', color: 'var(--text)', cursor: 'pointer', textAlign: 'center' }}>
-                  <div style={{ fontSize: '32px', marginBottom: '6px' }}>{cat.emoji}</div>
-                  <div style={{ fontWeight: 600 }}>{cat.name}</div>
+                  className="gradient-border"
+                  style={{ padding: '24px 16px', background: 'var(--bg-card)', color: 'var(--text)', cursor: 'pointer', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+                  <div className={`absolute inset-0 bg-gradient-to-br ${cat.color}`} style={{ opacity: 0.3, borderRadius: 'var(--radius)' }} />
+                  <div style={{ position: 'relative', zIndex: 1 }}>
+                    <div style={{ fontSize: '36px', marginBottom: '8px' }}>{cat.emoji}</div>
+                    <div style={{ fontWeight: 700, fontSize: '15px' }}>{cat.name}</div>
+                    <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginTop: '4px' }}>6개 구절</div>
+                  </div>
                 </motion.button>
               ))}
             </div>

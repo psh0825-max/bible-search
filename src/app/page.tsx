@@ -314,47 +314,51 @@ export default function Home() {
               {verses.map((v, i) => {
                 const mood = MOOD_CONFIG[v.mood] || MOOD_CONFIG.comfort
                 return (
-                  <motion.div key={i} initial={{ opacity: 0, y: 30, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ delay: i * 0.12, type: 'spring', stiffness: 200, damping: 22 }}>
-                    <div className="gradient-border" style={{ background: 'var(--bg-card)', padding: '24px' }}>
-                      <div className={`absolute inset-0 bg-gradient-to-br ${mood.gradient} rounded-[var(--radius)]`} style={{ opacity: 0.5 }} />
-                      <div className="relative z-10">
-                        {/* Header */}
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="flex items-center gap-2">
-                            <span className="text-2xl">{mood.emoji}</span>
-                            <span className="text-[var(--accent-light)] text-sm font-semibold">{v.reference}</span>
+                  <motion.div key={i} initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.1, type: 'spring', stiffness: 220, damping: 24 }}>
+                    <div className="gradient-border" style={{ background: 'var(--bg-card)', overflow: 'hidden' }}>
+                      <div className={`absolute inset-0 bg-gradient-to-br ${mood.gradient}`} style={{ opacity: 0.4, borderRadius: 'var(--radius)' }} />
+                      <div style={{ position: 'relative', zIndex: 1 }}>
+                        {/* Reference header */}
+                        <div style={{ padding: '16px 20px 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'var(--accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
+                            {mood.emoji}
                           </div>
-                          <div className="flex gap-1">
-                            <motion.button whileTap={{ scale: 0.85 }} onClick={() => speakVerse(v.text)}
-                              className="p-2 rounded-lg hover:bg-white/5" title="듣기"
-                              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', fontSize: '16px' }}>🔊</motion.button>
-                            <motion.button whileTap={{ scale: 0.85 }} onClick={() => addBookmark({ reference: v.reference, text: v.text, reason: v.reason, mood: v.mood })}
-                              className="p-2 rounded-lg hover:bg-white/5" title="저장"
-                              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', fontSize: '16px' }}>⭐</motion.button>
-                            <motion.button whileTap={{ scale: 0.85 }} onClick={() => copyVerse(v)}
-                              className="p-2 rounded-lg hover:bg-white/5" title="복사"
-                              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', fontSize: '16px' }}>📋</motion.button>
-                            <motion.button whileTap={{ scale: 0.85 }} onClick={() => shareVerse(v)}
-                              className="p-2 rounded-lg hover:bg-white/5" title="공유"
-                              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', fontSize: '16px' }}>🔗</motion.button>
+                          <div>
+                            <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--accent-bright)' }}>{v.reference}</div>
                           </div>
                         </div>
 
                         {/* Verse text */}
-                        <div className="text-xl leading-relaxed font-medium mb-4" style={{ lineHeight: 1.8, whiteSpace: 'pre-line' }}>
+                        <div style={{ padding: '16px 20px', fontSize: '17px', lineHeight: 2, fontWeight: 500, whiteSpace: 'pre-line', color: 'var(--text)' }}>
                           {v.text.includes('\n') ? v.text : `"${v.text}"`}
                         </div>
 
                         {/* Reason */}
                         {v.reason && (
-                          <div className="flex items-start gap-2 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
-                            <span className="text-sm mt-0.5">💬</span>
-                            <p className="text-sm text-[var(--text-dim)] leading-relaxed italic">
-                              {v.reason}
-                            </p>
+                          <div style={{ padding: '0 20px 12px', display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+                            <span style={{ fontSize: '12px', marginTop: '2px', opacity: 0.6 }}>💬</span>
+                            <p style={{ fontSize: '13px', color: 'var(--text-dim)', lineHeight: 1.6, fontStyle: 'italic' }}>{v.reason}</p>
                           </div>
                         )}
+
+                        {/* Actions bar */}
+                        <div style={{ padding: '10px 12px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'center', gap: '4px' }}>
+                          {[
+                            { icon: '🔊', label: '듣기', fn: () => speakVerse(v.text) },
+                            { icon: '⭐', label: '저장', fn: () => addBookmark({ reference: v.reference, text: v.text, reason: v.reason, mood: v.mood }) },
+                            { icon: '📋', label: '복사', fn: () => copyVerse(v) },
+                            { icon: '🔗', label: '공유', fn: () => shareVerse(v) },
+                          ].map(btn => (
+                            <motion.button key={btn.label} whileTap={{ scale: 0.88 }} onClick={btn.fn}
+                              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '8px 14px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--text-dim)', fontSize: '13px', transition: 'background 0.2s' }}
+                              onMouseEnter={e => (e.currentTarget.style.background = 'var(--accent-soft)')}
+                              onMouseLeave={e => (e.currentTarget.style.background = 'none')}>
+                              <span style={{ fontSize: '15px' }}>{btn.icon}</span>
+                              <span style={{ fontWeight: 500 }}>{btn.label}</span>
+                            </motion.button>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </motion.div>

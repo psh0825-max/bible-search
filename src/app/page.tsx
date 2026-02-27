@@ -374,9 +374,9 @@ export default function Home() {
                         </div>
 
                         {/* Verse text */}
-                        <p className="text-xl leading-relaxed font-medium mb-4" style={{ lineHeight: 1.8 }}>
-                          "{v.text}"
-                        </p>
+                        <div className="text-xl leading-relaxed font-medium mb-4" style={{ lineHeight: 1.8, whiteSpace: 'pre-line' }}>
+                          {v.text.includes('\n') ? v.text : `"${v.text}"`}
+                        </div>
 
                         {/* Reason */}
                         {v.reason && (

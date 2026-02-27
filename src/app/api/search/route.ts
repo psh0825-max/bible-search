@@ -30,7 +30,7 @@ function getVerseRange(bookName: string, chapter: number, startVerse: number, en
   const verses = book.chapters[chapter]
   const end = Math.min(endVerse, verses.length)
   if (startVerse < 1 || startVerse > verses.length) return null
-  return verses.slice(startVerse - 1, end).join(' ')
+  return verses.slice(startVerse - 1, end).map((v: string, i: number) => `[${startVerse + i}절] ${v}`).join('\n')
 }
 
 // Direct verse lookup: "요한복음 3장 16절", "시편 23:1-6", "창 1:1" etc.

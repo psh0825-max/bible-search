@@ -40,7 +40,51 @@ export default function Home() {
   const [searched, setSearched] = useState(false)
   const [error, setError] = useState('')
   const [stars, setStars] = useState<{ x: number; y: number; delay: number; size: number }[]>([])
+  const [listening, setListening] = useState(false)
+  const [speechSupported, setSpeechSupported] = useState(false)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+  const recognitionRef = useRef<any>(null)
+
+  useEffect(() => {
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    if (SR) {
+      setSpeechSupported(true)
+      const r = new SR()
+      r.lang = 'ko-KR'
+      r.continuous = false
+      r.interimResults = true
+      r.onresult = (e: any) => {
+        let transcript = ''
+        for (let i = 0; i < e.results.length; i++) {
+          transcript += e.results[i][0].transcript
+        }
+        setQuery(transcript)
+        if (e.results[0].isFinal) {
+          setListening(false)
+          // Auto-search after voice input
+          setTimeout(() => {
+            const btn = document.querySelector('[data-search-btn]') as HTMLButtonElement
+            if (btn && !btn.disabled) btn.click()
+          }, 300)
+        }
+      }
+      r.onend = () => setListening(false)
+      r.onerror = () => setListening(false)
+      recognitionRef.current = r
+    }
+  }, [])
+
+  const toggleVoice = useCallback(() => {
+    if (!recognitionRef.current) return
+    if (listening) {
+      recognitionRef.current.stop()
+      setListening(false)
+    } else {
+      setQuery('')
+      recognitionRef.current.start()
+      setListening(true)
+    }
+  }, [listening])
 
   useEffect(() => {
     const s = Array.from({ length: 60 }, () => ({
@@ -130,8 +174,8 @@ export default function Home() {
             말씀찾기
           </h1>
           <p className="text-[var(--text-dim)] text-lg leading-relaxed">
-            지금 당신의 마음을 말해보세요<br />
-            <span className="text-[var(--accent-light)]">꼭 맞는 성경 구절</span>을 찾아드릴게요
+            지금 당신의 마음을 <span className="text-[var(--accent-light)]">말해보세요</span> 🎤<br />
+            꼭 맞는 <span className="text-[var(--accent-light)]">성경 구절</span>을 찾아드릴게요
           </p>
         </motion.div>
 
@@ -147,18 +191,48 @@ export default function Home() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); search() } }}
-            placeholder="마음이 힘들어요... 감사해요... 용기가 필요해요..."
+            placeholder={listening ? '듣고 있어요... 🎙️' : '마음이 힘들어요... 감사해요... 용기가 필요해요...'}
             rows={3}
             className="w-full bg-transparent text-lg resize-none outline-none placeholder:text-[var(--text-dim)] p-2"
             maxLength={500}
+            style={listening ? { borderColor: 'var(--accent)', color: 'var(--accent-light)' } : {}}
           />
           <div className="flex items-center justify-between mt-2">
-            <span className="text-xs text-[var(--text-dim)]">{query.length}/500</span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-[var(--text-dim)]">{query.length}/500</span>
+              {speechSupported && (
+                <motion.button
+                  whileTap={{ scale: 0.85 }}
+                  onClick={toggleVoice}
+                  className="p-2 rounded-full"
+                  style={{
+                    background: listening ? 'var(--accent)' : 'transparent',
+                    border: listening ? 'none' : '1px solid var(--border)',
+                    cursor: 'pointer',
+                    color: listening ? 'white' : 'var(--text-dim)',
+                    fontSize: '20px',
+                    width: '40px',
+                    height: '40px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  title="음성으로 말하기"
+                >
+                  {listening ? (
+                    <motion.span animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1, repeat: Infinity }}>
+                      🎙️
+                    </motion.span>
+                  ) : '🎤'}
+                </motion.button>
+              )}
+            </div>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => search()}
               disabled={loading || !query.trim()}
+              data-search-btn
               className="px-8 py-3 rounded-xl font-bold text-lg disabled:opacity-40"
               style={{
                 background: 'linear-gradient(135deg, #7C3AED, #A78BFA)',

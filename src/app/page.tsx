@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { addHistory } from '@/lib/storage'
 import { addBookmark } from '@/lib/storage'
 import { speakVerse, stopSpeaking } from '@/lib/tts'
+import { useFontSize } from '@/components/FontSizeControl'
 
 interface Verse {
   reference: string
@@ -42,6 +43,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [searched, setSearched] = useState(false)
   const [error, setError] = useState('')
+  const { fontSize } = useFontSize()
   const [stars, setStars] = useState<{ x: number; y: number; delay: number; size: number }[]>([])
   const [listening, setListening] = useState(false)
   const [speechSupported, setSpeechSupported] = useState(false)
@@ -330,7 +332,7 @@ export default function Home() {
                         </div>
 
                         {/* Verse text */}
-                        <div style={{ padding: '16px 20px', fontSize: '17px', lineHeight: 2, fontWeight: 500, whiteSpace: 'pre-line', color: 'var(--text)' }}>
+                        <div style={{ padding: '16px 20px', fontSize: `${fontSize}px`, lineHeight: 2, fontWeight: 500, whiteSpace: 'pre-line', color: 'var(--text)' }}>
                           {v.text.includes('\n') ? v.text : `"${v.text}"`}
                         </div>
 

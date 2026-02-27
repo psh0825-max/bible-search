@@ -3,9 +3,11 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { getBookmarks, removeBookmark } from '@/lib/storage'
 import { speakVerse, stopSpeaking } from '@/lib/tts'
+import { useFontSize } from '@/components/FontSizeControl'
 
 export default function BookmarksPage() {
   const [bookmarks, setBookmarks] = useState<any[]>([])
+  const { fontSize } = useFontSize()
   const [speakingIdx, setSpeakingIdx] = useState(-1)
 
   useEffect(() => { loadBookmarks() }, [])
@@ -43,7 +45,7 @@ export default function BookmarksPage() {
               <motion.div key={bm.reference} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} transition={{ delay: i * 0.05 }}
                 className="glass" style={{ borderRadius: '16px', padding: '18px' }}>
                 <p style={{ fontSize: '13px', color: 'var(--accent-light)', fontWeight: 600, marginBottom: '6px' }}>{bm.reference}</p>
-                <p style={{ fontSize: '15px', lineHeight: 1.8 }}>"{bm.text}"</p>
+                <p style={{ fontSize: `${fontSize}px`, lineHeight: 1.8 }}>"{bm.text}"</p>
                 <div style={{ display: 'flex', gap: '4px', marginTop: '10px', justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', gap: '4px' }}>
                     <button onClick={() => speak(bm.text, i)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px', opacity: speakingIdx === i ? 1 : 0.5, padding: '4px' }}>{speakingIdx === i ? '⏹️' : '🔊'}</button>

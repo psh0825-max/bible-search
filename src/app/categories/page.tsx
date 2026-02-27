@@ -4,11 +4,13 @@ import { motion, AnimatePresence } from 'motion/react'
 import { CATEGORIES, getCategoryVerses, CategoryVerse, getDailyVerse } from '@/lib/bible-utils'
 import { speakVerse, stopSpeaking } from '@/lib/tts'
 import { addBookmark } from '@/lib/storage'
+import { useFontSize } from '@/components/FontSizeControl'
 
 export default function CategoriesPage() {
   const [selectedCat, setSelectedCat] = useState<string | null>(null)
   const [verses, setVerses] = useState<CategoryVerse[]>([])
   const [speakingIdx, setSpeakingIdx] = useState(-1)
+  const { fontSize } = useFontSize()
   const daily = getDailyVerse()
 
   function selectCategory(id: string) {
@@ -38,7 +40,7 @@ export default function CategoriesPage() {
               <div style={{ position: 'relative', zIndex: 1 }}>
                 <motion.div animate={{ y: [0, -6, 0], rotate: [0, 3, -3, 0] }} transition={{ duration: 5, repeat: Infinity }} style={{ fontSize: '40px', marginBottom: '12px' }}>🌅</motion.div>
                 <p style={{ fontSize: '11px', color: 'var(--accent-bright)', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>✦ 오늘의 말씀 ✦</p>
-                <p style={{ fontSize: '18px', lineHeight: 1.9, marginBottom: '12px', fontWeight: 500 }}>"{daily.text}"</p>
+                <p style={{ fontSize: `${fontSize + 1}px`, lineHeight: 1.9, marginBottom: '12px', fontWeight: 500 }}>"{daily.text}"</p>
                 <p style={{ fontSize: '14px', color: 'var(--text-dim)', fontWeight: 600 }}>{daily.reference}</p>
               </div>
               <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '12px' }}>
@@ -78,7 +80,7 @@ export default function CategoriesPage() {
                 <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
                   className="glass" style={{ borderRadius: '16px', padding: '20px' }}>
                   <p style={{ fontSize: '13px', color: 'var(--accent-light)', fontWeight: 600, marginBottom: '8px' }}>{v.reference}</p>
-                  <p style={{ fontSize: '16px', lineHeight: 1.8 }}>"{v.text}"</p>
+                  <p style={{ fontSize: `${fontSize}px`, lineHeight: 1.8 }}>"{v.text}"</p>
                   <div style={{ display: 'flex', gap: '4px', marginTop: '10px' }}>
                     <button onClick={() => speak(v.text, i)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px', opacity: speakingIdx === i ? 1 : 0.5, padding: '4px' }}>{speakingIdx === i ? '⏹️' : '🔊'}</button>
                     <button onClick={() => addBookmark({ reference: v.reference, text: v.text, mood: cat?.id })} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px', opacity: 0.5, padding: '4px' }}>⭐</button>

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react'
 import { getBooks, getChapter, BookInfo } from '@/lib/bible-utils'
 import { speakVerse, stopSpeaking } from '@/lib/tts'
 import { addBookmark, removeBookmark, isBookmarked } from '@/lib/storage'
+import { useFontSize } from '@/components/FontSizeControl'
 
 type View = 'books' | 'chapters' | 'reading'
 
@@ -15,6 +16,7 @@ export default function ReadPage() {
   const [speakingVerse, setSpeakingVerse] = useState(-1)
   const [bookmarkedVerses, setBookmarkedVerses] = useState<Set<string>>(new Set())
   const [testament, setTestament] = useState<'old' | 'new'>('old')
+  const { fontSize } = useFontSize()
   const books = getBooks()
 
   function selectBook(book: BookInfo) {
@@ -140,7 +142,7 @@ export default function ReadPage() {
                     whileHover={{ backgroundColor: 'rgba(139,92,246,0.06)' }}>
                     <span className="verse-num">{i + 1}</span>
                     <div style={{ flex: 1 }}>
-                      <p style={{ lineHeight: 1.9, fontSize: '16px', color: 'var(--text-secondary)' }}>{verse}</p>
+                      <p style={{ lineHeight: 1.9, fontSize: `${fontSize}px`, color: 'var(--text-secondary)' }}>{verse}</p>
                       <div style={{ display: 'flex', gap: '2px', marginTop: '6px' }}>
                         <button onClick={() => speak(verse, i)} className="action-btn" style={{ opacity: speakingVerse === i ? 1 : 0.5 }}>{speakingVerse === i ? '⏹️' : '🔊'}</button>
                         <button onClick={() => toggleBookmark(i)} className="action-btn" style={{ opacity: isBm ? 1 : 0.5 }}>{isBm ? '⭐' : '☆'}</button>

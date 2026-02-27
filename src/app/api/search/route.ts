@@ -33,6 +33,45 @@ function getVerseRange(bookName: string, chapter: number, startVerse: number, en
   return verses.slice(startVerse - 1, end).join(' ')
 }
 
+// Direct verse lookup: "요한복음 3장 16절", "시편 23:1-6", "창 1:1" etc.
+function tryDirectLookup(query: string): { reference: string; text: string }[] | null {
+  const results: { reference: string; text: string }[] = []
+
+  // Patterns to match
+  const patterns = [
+    // "요한복음 3장 16절" or "요한복음 3장 16-18절"
+    /([가-힣]+(?:\s?[가-힣]*)?)[\s]*(\d+)[\s]*장[\s]*(\d+)(?:[\s]*[-~][\s]*(\d+))?[\s]*절?/g,
+    // "요한복음 3:16" or "요한복음 3:16-18"
+    /([가-힣]+(?:\s?[가-힣]*)?)[\s]*(\d+)[\s]*:[\s]*(\d+)(?:[\s]*[-~][\s]*(\d+))?/g,
+    // "요 3:16" abbreviation
+    /([가-힣]{1,4})[\s]*(\d+)[\s]*:[\s]*(\d+)(?:[\s]*[-~][\s]*(\d+))?/g,
+  ]
+
+  for (const pattern of patterns) {
+    let match
+    while ((match = pattern.exec(query)) !== null) {
+      const bookName = match[1].trim()
+      const chapter = parseInt(match[2])
+      const startV = parseInt(match[3])
+      const endV = match[4] ? parseInt(match[4]) : startV
+
+      const text = startV === endV
+        ? getVerse(bookName, chapter, startV)
+        : getVerseRange(bookName, chapter, startV, endV)
+
+      if (text) {
+        const ref = startV === endV
+          ? `${bookName} ${chapter}:${startV}`
+          : `${bookName} ${chapter}:${startV}-${endV}`
+        results.push({ reference: ref, text })
+      }
+    }
+    if (results.length > 0) break
+  }
+
+  return results.length > 0 ? results : null
+}
+
 const SYSTEM_PROMPT = `당신은 성경 전문가입니다. 사용자가 자신의 감정, 상황, 고민을 설명하면 가장 적합한 성경 구절 3~5개의 **위치**를 알려주세요.
 
 반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트 없이 JSON만 출력하세요.
@@ -60,6 +99,19 @@ export async function POST(req: NextRequest) {
     const { query } = await req.json()
     if (!query || typeof query !== 'string' || query.length > 500) {
       return NextResponse.json({ error: '검색어를 입력해주세요' }, { status: 400 })
+    }
+
+    // Try direct verse lookup first
+    const directResults = tryDirectLookup(query)
+    if (directResults) {
+      const verses = directResults.map(v => ({
+        reference: v.reference,
+        text: v.text,
+        reason: '',
+        mood: 'faith',
+        found: true,
+      }))
+      return NextResponse.json({ verses, direct: true })
     }
 
     const res = await fetch(GEMINI_URL, {

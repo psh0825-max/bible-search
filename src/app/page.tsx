@@ -191,7 +191,7 @@ export default function Home() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); search() } }}
-            placeholder={listening ? '듣고 있어요... 🎙️' : '마음이 힘들어요... 감사해요... 용기가 필요해요...'}
+            placeholder={listening ? '듣고 있어요... 🎙️' : '마음을 말하거나, 요한복음 3장 16절 처럼 구절을 찾아보세요'}
             rows={3}
             className="w-full bg-transparent text-lg resize-none outline-none placeholder:text-[var(--text-dim)] p-2"
             maxLength={500}
@@ -381,12 +381,14 @@ export default function Home() {
                         </p>
 
                         {/* Reason */}
-                        <div className="flex items-start gap-2 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
-                          <span className="text-sm mt-0.5">💬</span>
-                          <p className="text-sm text-[var(--text-dim)] leading-relaxed italic">
-                            {v.reason}
-                          </p>
-                        </div>
+                        {v.reason && (
+                          <div className="flex items-start gap-2 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
+                            <span className="text-sm mt-0.5">💬</span>
+                            <p className="text-sm text-[var(--text-dim)] leading-relaxed italic">
+                              {v.reason}
+                            </p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </motion.div>

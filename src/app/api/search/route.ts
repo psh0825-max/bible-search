@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import bibleData from '@/data/bible.json'
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${GEMINI_API_KEY}`
 
 // Build book lookup: name/abbr → vl number
 const BOOK_LOOKUP: Record<string, string> = {}

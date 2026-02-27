@@ -71,15 +71,15 @@ export default function ReadPage() {
   return (
     <div className="relative z-10 max-w-lg mx-auto px-5 pt-6">
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
         {view !== 'books' && (
           <motion.button whileTap={{ scale: 0.9 }} onClick={() => setView(view === 'reading' ? 'chapters' : 'books')}
-            style={{ background: 'none', border: '1px solid var(--border)', borderRadius: '12px', padding: '8px 14px', color: 'var(--text)', cursor: 'pointer', fontSize: '14px' }}>
+            style={{ background: 'var(--accent-soft)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '8px 16px', color: 'var(--accent-bright)', cursor: 'pointer', fontSize: '14px', fontWeight: 600 }}>
             ← 뒤로
           </motion.button>
         )}
-        <h1 style={{ fontSize: '24px', fontWeight: 800 }}>
-          {view === 'books' ? '📖 성경 읽기' : view === 'chapters' ? `📖 ${selectedBook?.name}` : `${selectedBook?.name} ${selectedChapter}장`}
+        <h1 style={{ fontSize: '22px', fontWeight: 800 }}>
+          {view === 'books' ? '📖 성경 읽기' : view === 'chapters' ? selectedBook?.name : `${selectedBook?.name} ${selectedChapter}장`}
         </h1>
       </div>
 
@@ -87,23 +87,26 @@ export default function ReadPage() {
         {/* Book List */}
         {view === 'books' && (
           <motion.div key="books" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
               {(['old', 'new'] as const).map(t => (
                 <button key={t} onClick={() => setTestament(t)} style={{
-                  flex: 1, padding: '10px', borderRadius: '12px', border: 'none', cursor: 'pointer', fontWeight: 600,
-                  background: testament === t ? 'var(--accent)' : 'var(--bg-card)', color: testament === t ? 'white' : 'var(--text-dim)',
+                  flex: 1, padding: '12px', borderRadius: 'var(--radius-sm)', border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: '14px',
+                  background: testament === t ? 'linear-gradient(135deg, var(--accent), #7C3AED)' : 'var(--bg-card)',
+                  color: testament === t ? 'white' : 'var(--text-dim)',
+                  boxShadow: testament === t ? '0 4px 15px rgba(139,92,246,0.3)' : 'none',
+                  transition: 'all 0.2s',
                 }}>
-                  {t === 'old' ? '⛪ 구약 (39권)' : '✝️ 신약 (27권)'}
+                  {t === 'old' ? '구약 39권' : '신약 27권'}
                 </button>
               ))}
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
               {books.filter(b => b.testament === testament).map((book, i) => (
-                <motion.button key={book.vl} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.02 }}
-                  whileTap={{ scale: 0.95 }} onClick={() => selectBook(book)}
-                  style={{ padding: '14px 8px', borderRadius: '14px', border: '1px solid var(--border)', background: 'var(--bg-card)', color: 'var(--text)', cursor: 'pointer', textAlign: 'center', fontSize: '13px', fontWeight: 500 }}>
-                  <div>{book.name}</div>
-                  <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginTop: '2px' }}>{book.chapters}장</div>
+                <motion.button key={book.vl} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.015 }}
+                  whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.95 }} onClick={() => selectBook(book)}
+                  style={{ padding: '16px 8px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', background: 'var(--bg-card)', color: 'var(--text)', cursor: 'pointer', textAlign: 'center', transition: 'border-color 0.2s' }}>
+                  <div style={{ fontSize: '14px', fontWeight: 600 }}>{book.name}</div>
+                  <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginTop: '4px' }}>{book.chapters}장</div>
                 </motion.button>
               ))}
             </div>
@@ -132,20 +135,16 @@ export default function ReadPage() {
                 const ref = `${selectedBook?.name} ${selectedChapter}:${i + 1}`
                 const isBm = bookmarkedVerses.has(ref)
                 return (
-                  <motion.div key={i} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.02 }}
-                    style={{ display: 'flex', gap: '8px', padding: '10px 8px', borderRadius: '10px', transition: 'background 0.2s' }}
-                    whileHover={{ backgroundColor: 'rgba(124,58,237,0.08)' }}>
-                    <span style={{ color: 'var(--accent-light)', fontWeight: 700, minWidth: '28px', fontSize: '13px', paddingTop: '3px' }}>{i + 1}</span>
+                  <motion.div key={i} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.015 }}
+                    style={{ display: 'flex', gap: '12px', padding: '12px 8px', borderRadius: 'var(--radius-sm)', transition: 'background 0.2s' }}
+                    whileHover={{ backgroundColor: 'rgba(139,92,246,0.06)' }}>
+                    <span className="verse-num">{i + 1}</span>
                     <div style={{ flex: 1 }}>
-                      <p style={{ lineHeight: 1.8, fontSize: '16px' }}>{verse}</p>
-                      <div style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
-                        <button onClick={() => speak(verse, i)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px', opacity: speakingVerse === i ? 1 : 0.4, padding: '4px' }}>
-                          {speakingVerse === i ? '⏹️' : '🔊'}
-                        </button>
-                        <button onClick={() => toggleBookmark(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px', opacity: isBm ? 1 : 0.4, padding: '4px' }}>
-                          {isBm ? '⭐' : '☆'}
-                        </button>
-                        <button onClick={() => navigator.clipboard.writeText(`${verse} - ${ref}`)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px', opacity: 0.4, padding: '4px' }}>📋</button>
+                      <p style={{ lineHeight: 1.9, fontSize: '16px', color: 'var(--text-secondary)' }}>{verse}</p>
+                      <div style={{ display: 'flex', gap: '2px', marginTop: '6px' }}>
+                        <button onClick={() => speak(verse, i)} className="action-btn" style={{ opacity: speakingVerse === i ? 1 : 0.5 }}>{speakingVerse === i ? '⏹️' : '🔊'}</button>
+                        <button onClick={() => toggleBookmark(i)} className="action-btn" style={{ opacity: isBm ? 1 : 0.5 }}>{isBm ? '⭐' : '☆'}</button>
+                        <button onClick={() => navigator.clipboard.writeText(`${verse} - ${ref}`)} className="action-btn" style={{ opacity: 0.5 }}>📋</button>
                       </div>
                     </div>
                   </motion.div>

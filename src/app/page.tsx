@@ -142,44 +142,23 @@ export default function Home() {
 
   return (
     <div className="relative min-h-dvh">
-      {/* Stars */}
+      {/* Ambient background */}
+      <div className="ambient" />
       <div className="stars">
         {stars.map((s, i) => (
-          <div
-            key={i}
-            className="star"
-            style={{
-              left: `${s.x}%`,
-              top: `${s.y}%`,
-              width: `${s.size}px`,
-              height: `${s.size}px`,
-              animationDelay: `${s.delay}s`,
-            }}
-          />
+          <div key={i} className="star" style={{ left: `${s.x}%`, top: `${s.y}%`, width: `${s.size}px`, height: `${s.size}px`, animationDelay: `${s.delay}s` }} />
         ))}
       </div>
 
       <div className="relative z-10 max-w-lg mx-auto px-5 pb-20">
         {/* Hero */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="pt-16 pb-8 text-center"
-        >
-          <motion.div
-            animate={{ y: [0, -6, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-            className="text-6xl mb-6"
-          >
-            ✝️
-          </motion.div>
-          <h1 className="text-4xl font-extrabold mb-3 bg-gradient-to-r from-purple-400 via-pink-300 to-amber-300 bg-clip-text text-transparent">
-            말씀찾기
-          </h1>
-          <p className="text-[var(--text-dim)] text-lg leading-relaxed">
-            지금 당신의 마음을 <span className="text-[var(--accent-light)]">말해보세요</span> 🎤<br />
-            꼭 맞는 <span className="text-[var(--accent-light)]">성경 구절</span>을 찾아드릴게요
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="pt-14 pb-6 text-center">
+          <motion.div animate={{ y: [0, -8, 0], rotate: [0, 2, -2, 0] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ fontSize: '56px', marginBottom: '16px', filter: 'drop-shadow(0 0 20px rgba(139,92,246,0.3))' }}>✝️</motion.div>
+          <h1 style={{ fontSize: '36px', fontWeight: 900, marginBottom: '10px', background: 'linear-gradient(135deg, #C4B5FD, #F9A8D4, #FDE68A)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>말씀찾기</h1>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '16px', lineHeight: 1.7 }}>
+            마음을 <span style={{ color: 'var(--accent-bright)', fontWeight: 600 }}>말해보세요</span> 🎤<br />
+            꼭 맞는 성경 구절을 찾아드릴게요
           </p>
         </motion.div>
 
@@ -188,7 +167,8 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          className="glass rounded-2xl p-4 glow mb-6"
+          className="glass-strong glow"
+          style={{ borderRadius: 'var(--radius-lg)', padding: '20px', marginBottom: '24px' }}
         >
           <textarea
             ref={inputRef}
@@ -267,20 +247,12 @@ export default function Home() {
               exit={{ opacity: 0, height: 0 }}
               transition={{ delay: 0.5 }}
             >
-              <p className="text-sm text-[var(--text-dim)] mb-3 ml-1">💡 이런 마음도 괜찮아요</p>
-              <div className="flex flex-wrap gap-2 mb-8">
+              <p className="section-title" style={{ marginLeft: '4px' }}>💡 이런 마음도 괜찮아요</p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '24px' }}>
                 {SUGGESTIONS.map((s, i) => (
-                  <motion.button
-                    key={s}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.6 + i * 0.05 }}
-                    whileHover={{ scale: 1.05, backgroundColor: 'rgba(124, 58, 237, 0.2)' }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => handleSuggestion(s)}
-                    className="glass px-4 py-2.5 rounded-full text-sm cursor-pointer hover:border-[var(--accent)]"
-                    style={{ border: '1px solid var(--border)' }}
-                  >
+                  <motion.button key={s} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.5 + i * 0.04 }} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                    onClick={() => handleSuggestion(s)} className="pill">
                     {s}
                   </motion.button>
                 ))}
@@ -342,14 +314,10 @@ export default function Home() {
               {verses.map((v, i) => {
                 const mood = MOOD_CONFIG[v.mood] || MOOD_CONFIG.comfort
                 return (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ delay: i * 0.15, type: 'spring', stiffness: 200, damping: 20 }}
-                  >
-                    <div className={`verse-card bg-gradient-to-br ${mood.gradient} p-6`} style={{ background: 'var(--bg-card)' }}>
-                      <div className={`absolute inset-0 bg-gradient-to-br ${mood.gradient} rounded-[20px]`} />
+                  <motion.div key={i} initial={{ opacity: 0, y: 30, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ delay: i * 0.12, type: 'spring', stiffness: 200, damping: 22 }}>
+                    <div className="gradient-border" style={{ background: 'var(--bg-card)', padding: '24px' }}>
+                      <div className={`absolute inset-0 bg-gradient-to-br ${mood.gradient} rounded-[var(--radius)]`} style={{ opacity: 0.5 }} />
                       <div className="relative z-10">
                         {/* Header */}
                         <div className="flex items-center justify-between mb-4">

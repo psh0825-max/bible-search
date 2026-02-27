@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${GEMINI_API_KEY}`
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`
 
 const SYSTEM_PROMPT = `당신은 성경 전문가입니다. 사용자가 자신의 감정, 상황, 고민을 설명하면 가장 적합한 성경 구절 3~5개를 찾아주세요.
 

@@ -1,6 +1,9 @@
 'use client'
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
+import { addHistory } from '@/lib/storage'
+import { addBookmark } from '@/lib/storage'
+import { speakVerse, stopSpeaking } from '@/lib/tts'
 
 interface Verse {
   reference: string
@@ -102,6 +105,7 @@ export default function Home() {
     setLoading(true)
     setError('')
     setSearched(true)
+    addHistory(searchQuery).catch(() => {})
     try {
       const res = await fetch('/api/search', {
         method: 'POST',
@@ -354,24 +358,18 @@ export default function Home() {
                             <span className="text-[var(--accent-light)] text-sm font-semibold">{v.reference}</span>
                           </div>
                           <div className="flex gap-1">
-                            <motion.button
-                              whileTap={{ scale: 0.85 }}
-                              onClick={() => copyVerse(v)}
-                              className="p-2 rounded-lg hover:bg-white/5"
-                              title="복사"
-                              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', fontSize: '16px' }}
-                            >
-                              📋
-                            </motion.button>
-                            <motion.button
-                              whileTap={{ scale: 0.85 }}
-                              onClick={() => shareVerse(v)}
-                              className="p-2 rounded-lg hover:bg-white/5"
-                              title="공유"
-                              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', fontSize: '16px' }}
-                            >
-                              🔗
-                            </motion.button>
+                            <motion.button whileTap={{ scale: 0.85 }} onClick={() => speakVerse(v.text)}
+                              className="p-2 rounded-lg hover:bg-white/5" title="듣기"
+                              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', fontSize: '16px' }}>🔊</motion.button>
+                            <motion.button whileTap={{ scale: 0.85 }} onClick={() => addBookmark({ reference: v.reference, text: v.text, reason: v.reason, mood: v.mood })}
+                              className="p-2 rounded-lg hover:bg-white/5" title="저장"
+                              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', fontSize: '16px' }}>⭐</motion.button>
+                            <motion.button whileTap={{ scale: 0.85 }} onClick={() => copyVerse(v)}
+                              className="p-2 rounded-lg hover:bg-white/5" title="복사"
+                              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', fontSize: '16px' }}>📋</motion.button>
+                            <motion.button whileTap={{ scale: 0.85 }} onClick={() => shareVerse(v)}
+                              className="p-2 rounded-lg hover:bg-white/5" title="공유"
+                              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)', fontSize: '16px' }}>🔗</motion.button>
                           </div>
                         </div>
 

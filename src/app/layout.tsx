@@ -13,13 +13,18 @@ export const viewport: Viewport = {
   themeColor: '#0F0F1A',
 }
 
+import Nav from '@/components/Nav'
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
       <head>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
       </head>
-      <body>{children}</body>
+      <body>
+        <div style={{ paddingBottom: '72px' }}>{children}</div>
+        <Nav />
+      </body>
     </html>
   )
 }

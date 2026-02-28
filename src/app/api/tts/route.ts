@@ -10,8 +10,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid text' }, { status: 400 })
     }
 
+    // SSML: 구두점에 쉼 추가
+    const ssml = '<speak>' + text
+      .replace(/\. /g, '.<break time="500ms"/> ')
+      .replace(/\, /g, ',<break time="300ms"/> ')
+      .replace(/\? /g, '?<break time="500ms"/> ')
+      .replace(/\! /g, '!<break time="400ms"/> ')
+      .replace(/하라 /g, '하라<break time="350ms"/> ')
+      .replace(/하리라/g, '하리라<break time="400ms"/>')
+      .replace(/니라/g, '니라<break time="400ms"/>')
+      .replace(/도다/g, '도다<break time="400ms"/>')
+      .replace(/로다/g, '로다<break time="400ms"/>')
+      .replace(/이니/g, '이니<break time="300ms"/>')
+      .replace(/\n/g, '<break time="600ms"/>')
+      + '</speak>'
+
     const [response] = await client.synthesizeSpeech({
-      input: { text },
+      input: { ssml },
       voice: {
         languageCode: 'ko-KR',
         name: 'ko-KR-Wavenet-C', // 남성, 차분한 톤

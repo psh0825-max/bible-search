@@ -183,14 +183,13 @@ export default function Home() {
             maxLength={500}
             style={listening ? { borderColor: 'var(--accent)', color: 'var(--accent-light)' } : {}}
           />
-          <div className="flex items-center justify-between mt-2">
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-[var(--text-dim)]">{query.length}/500</span>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '12px', color: 'var(--text-dim)' }}>{query.length}/500</span>
               {speechSupported && (
                 <motion.button
                   whileTap={{ scale: 0.85 }}
                   onClick={toggleVoice}
-                  className="p-2 rounded-full"
                   style={{
                     background: listening ? 'var(--accent)' : 'transparent',
                     border: listening ? 'none' : '1px solid var(--border)',
@@ -199,6 +198,7 @@ export default function Home() {
                     fontSize: '20px',
                     width: '40px',
                     height: '40px',
+                    borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -213,31 +213,40 @@ export default function Home() {
                 </motion.button>
               )}
             </div>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => search()}
-              disabled={loading || !query.trim()}
-              data-search-btn
-              className="px-8 py-3 rounded-xl font-bold text-lg disabled:opacity-40"
-              style={{
-                background: 'linear-gradient(135deg, #7C3AED, #A78BFA)',
-                color: 'white',
-                border: 'none',
-                cursor: loading || !query.trim() ? 'default' : 'pointer',
-              }}
-            >
-              {loading ? (
-                <motion.span
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                  className="inline-block"
-                >
-                  ✨
-                </motion.span>
-              ) : '찾기 🔍'}
-            </motion.button>
           </div>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => search()}
+            disabled={loading || !query.trim()}
+            style={{
+              width: '100%',
+              marginTop: '14px',
+              padding: '16px',
+              borderRadius: '16px',
+              border: 'none',
+              background: loading || !query.trim()
+                ? 'rgba(124,58,237,0.3)'
+                : 'linear-gradient(135deg, #7C3AED, #9333EA, #A78BFA)',
+              color: 'white',
+              fontSize: '18px',
+              fontWeight: 800,
+              cursor: loading || !query.trim() ? 'default' : 'pointer',
+              letterSpacing: '0.02em',
+              boxShadow: loading || !query.trim() ? 'none' : '0 4px 20px rgba(124,58,237,0.4)',
+              transition: 'all 0.2s',
+            }}
+          >
+            {loading ? (
+              <motion.span
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                style={{ display: 'inline-block' }}
+              >
+                ✨
+              </motion.span>
+            ) : '✝️ 말씀 찾기'}
+          </motion.button>
         </motion.div>
 
         {/* Suggestions */}

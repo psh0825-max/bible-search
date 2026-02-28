@@ -222,15 +222,15 @@ export default function Home() {
             style={{
               width: '100%',
               marginTop: '14px',
-              padding: '16px',
+              padding: '18px 16px',
               borderRadius: '16px',
               border: 'none',
               background: loading || !query.trim()
                 ? 'rgba(124,58,237,0.3)'
                 : 'linear-gradient(135deg, #7C3AED, #9333EA, #A78BFA)',
               color: 'white',
-              fontSize: '18px',
-              fontWeight: 800,
+              fontSize: '17px',
+              fontWeight: 700,
               cursor: loading || !query.trim() ? 'default' : 'pointer',
               letterSpacing: '0.02em',
               boxShadow: loading || !query.trim() ? 'none' : '0 4px 20px rgba(124,58,237,0.4)',

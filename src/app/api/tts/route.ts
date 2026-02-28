@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
       },
       audioConfig: {
         audioEncoding: 'MP3',
-        speakingRate: 0.9,
+        speakingRate: 0.82,
         pitch: -2.0, // 낮은 톤
       },
     })

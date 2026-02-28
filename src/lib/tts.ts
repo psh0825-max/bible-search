@@ -1,63 +1,71 @@
-// Browser SpeechSynthesis TTS
+// Google Cloud TTS with browser fallback
 let speaking = false
-let voicesLoaded = false
-let koVoice: SpeechSynthesisVoice | null = null
+let currentAudio: HTMLAudioElement | null = null
 
-function loadVoices() {
-  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return
-  const voices = window.speechSynthesis.getVoices()
-  if (voices.length > 0) {
-    koVoice = voices.find(v => v.lang.startsWith('ko')) || null
-    voicesLoaded = true
-  }
-}
+// Cache for audio URLs to avoid re-fetching
+const audioCache = new Map<string, string>()
 
-// Load voices on init and on change
-if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-  loadVoices()
-  window.speechSynthesis.onvoiceschanged = loadVoices
-}
+export async function speakVerse(text: string, onEnd?: () => void) {
+  if (typeof window === 'undefined') { onEnd?.(); return }
 
-export function speakVerse(text: string, onEnd?: () => void) {
-  if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
-    onEnd?.()
+  // Stop any current speech
+  stopSpeaking()
+  speaking = true
+
+  // Try Google Cloud TTS first
+  try {
+    let audioUrl = audioCache.get(text)
+    if (!audioUrl) {
+      const res = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      })
+      if (!res.ok) throw new Error('API error')
+      const blob = await res.blob()
+      audioUrl = URL.createObjectURL(blob)
+      audioCache.set(text, audioUrl)
+    }
+
+    const audio = new Audio(audioUrl)
+    currentAudio = audio
+    audio.onended = () => { speaking = false; currentAudio = null; onEnd?.() }
+    audio.onerror = () => { speaking = false; currentAudio = null; fallbackSpeak(text, onEnd) }
+    await audio.play()
     return
+  } catch {
+    // Fall back to browser TTS
+    fallbackSpeak(text, onEnd)
   }
+}
 
-  // Cancel any current speech
+function fallbackSpeak(text: string, onEnd?: () => void) {
+  if (!('speechSynthesis' in window)) { speaking = false; onEnd?.(); return }
+
   window.speechSynthesis.cancel()
-
-  // Reload voices if not loaded yet
-  if (!voicesLoaded) loadVoices()
-
   const utterance = new SpeechSynthesisUtterance(text)
   utterance.lang = 'ko-KR'
   utterance.rate = 0.9
-  utterance.pitch = 1.0
+
+  const voices = window.speechSynthesis.getVoices()
+  const koVoice = voices.find(v => v.lang.startsWith('ko'))
   if (koVoice) utterance.voice = koVoice
 
-  speaking = true
   utterance.onend = () => { speaking = false; onEnd?.() }
   utterance.onerror = () => { speaking = false; onEnd?.() }
 
-  // Mobile Chrome workaround: short delay after cancel
-  setTimeout(() => {
-    window.speechSynthesis.speak(utterance)
-    // Android Chrome bug: speech pauses after ~15s, keep alive
-    const keepAlive = setInterval(() => {
-      if (!speaking) { clearInterval(keepAlive); return }
-      window.speechSynthesis.pause()
-      window.speechSynthesis.resume()
-    }, 10000)
-    utterance.onend = () => { speaking = false; clearInterval(keepAlive); onEnd?.() }
-    utterance.onerror = () => { speaking = false; clearInterval(keepAlive); onEnd?.() }
-  }, 100)
+  setTimeout(() => window.speechSynthesis.speak(utterance), 100)
 }
 
 export function stopSpeaking() {
+  speaking = false
+  if (currentAudio) {
+    currentAudio.pause()
+    currentAudio.currentTime = 0
+    currentAudio = null
+  }
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
     window.speechSynthesis.cancel()
-    speaking = false
   }
 }
 

@@ -14,13 +14,13 @@ export async function POST(req: NextRequest) {
       input: { text },
       voice: {
         languageCode: 'ko-KR',
-        name: 'ko-KR-Wavenet-A', // 여성, 자연스러운 한국어
-        ssmlGender: 'FEMALE',
+        name: 'ko-KR-Wavenet-C', // 남성, 차분한 톤
+        ssmlGender: 'MALE',
       },
       audioConfig: {
         audioEncoding: 'MP3',
-        speakingRate: 0.92,
-        pitch: 0,
+        speakingRate: 0.9,
+        pitch: -2.0, // 낮은 톤
       },
     })
 

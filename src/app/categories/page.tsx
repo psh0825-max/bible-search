@@ -42,11 +42,11 @@ export default function CategoriesPage() {
                 <p style={{ fontSize: '11px', color: 'var(--accent-bright)', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>✦ 오늘의 말씀 ✦</p>
                 <p style={{ fontSize: `${fontSize + 1}px`, lineHeight: 1.9, marginBottom: '12px', fontWeight: 500 }}>"{daily.text}"</p>
                 <p style={{ fontSize: '14px', color: 'var(--text-dim)', fontWeight: 600 }}>{daily.reference}</p>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '12px' }}>
-                <button onClick={() => speakVerse(daily.text)} style={{ background: 'none', border: '1px solid var(--border)', borderRadius: '10px', padding: '8px 16px', color: 'var(--text-dim)', cursor: 'pointer', fontSize: '13px' }}>🔊 듣기</button>
-                <button onClick={() => { addBookmark({ reference: daily.reference, text: daily.text, mood: 'hope' }) }} style={{ background: 'none', border: '1px solid var(--border)', borderRadius: '10px', padding: '8px 16px', color: 'var(--text-dim)', cursor: 'pointer', fontSize: '13px' }}>⭐ 저장</button>
-                <button onClick={() => navigator.clipboard.writeText(`${daily.text}\n- ${daily.reference}`)} style={{ background: 'none', border: '1px solid var(--border)', borderRadius: '10px', padding: '8px 16px', color: 'var(--text-dim)', cursor: 'pointer', fontSize: '13px' }}>📋 복사</button>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '16px' }}>
+                  <button onClick={() => speakVerse(daily.text)} style={{ position: 'relative', zIndex: 2, background: 'none', border: '1px solid var(--border)', borderRadius: '10px', padding: '10px 18px', color: 'var(--text-dim)', cursor: 'pointer', fontSize: '14px' }}>🔊 듣기</button>
+                  <button onClick={() => { addBookmark({ reference: daily.reference, text: daily.text, mood: 'hope' }) }} style={{ position: 'relative', zIndex: 2, background: 'none', border: '1px solid var(--border)', borderRadius: '10px', padding: '10px 18px', color: 'var(--text-dim)', cursor: 'pointer', fontSize: '14px' }}>⭐ 저장</button>
+                  <button onClick={() => navigator.clipboard.writeText(`${daily.text}\n- ${daily.reference}`)} style={{ position: 'relative', zIndex: 2, background: 'none', border: '1px solid var(--border)', borderRadius: '10px', padding: '10px 18px', color: 'var(--text-dim)', cursor: 'pointer', fontSize: '14px' }}>📋 복사</button>
+                </div>
               </div>
             </motion.div>
 
